@@ -1,65 +1,201 @@
-import Image from "next/image";
+"use client"
+
+import { useEffect, useState } from "react"
+
+const COLORS = ["#ff6384", "#36a2eb", "#ffce56", "#4bc0c0"];
 
 export default function Home() {
+  const [rows, setRows] = useState<string[][]>([])
+  const [loading, setLoading] = useState(true)
+  const [editing, setEditing] = useState<{row: number, col: number} | null>(null);
+  // セル更新
+  async function saveCell(row: number, col: number, value: string) {
+    await fetch("/api/update", {
+      method: "POST",
+      body: JSON.stringify({ row, col, value }),
+    });
+    location.reload();
+  }
+
+  // 行削除
+  async function deleteRow(index: number) {
+    await fetch("/api/deleteRow", {
+      method: "POST",
+      body: JSON.stringify({ index }),
+    });
+    location.reload();
+  }
+
+  useEffect(() => {
+    fetch("/api/sheet")
+      .then(res => res.json())
+      .then(data => {
+        setRows(data.data)
+        setLoading(false)
+      })
+  }, [])
+
+  if (loading) return <p className="p-4">読み込み中…</p>
+  if (rows.length === 0) return <p className="p-4">データがありません</p>
+
+  const [header, ...body] = rows
+
+  // 合計金額
+  const total = body.reduce((sum, row) => {
+    const cost = Number(row[2] || 0)
+    return sum + cost
+  }, 0)
+
+  // 円グラフ用データ（0円は除外）
+  const pieData = body
+    .map(row => ({
+      label: row[1],
+      value: Number(row[2])
+    }))
+    .filter(d => d.value > 0)
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-4 text-gray-900">
+        結婚式費用一覧
+      </h1>
+
+      <table className="w-full border border-gray-500 border-collapse bg-white/80 backdrop-blur-sm rounded-lg shadow">
+        <thead className="bg-gray-100">
+          <tr>
+            {header.map((h, i) => (
+              <th key={i} className="border p-2">{h}</th>
+            ))}
+            <th className="border p-2">操作</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {body.map((row, i) => (
+            <tr key={i}>
+              {header.map((_, j) => (
+                <td
+                  key={j}
+                  className="border border-gray-800 p-2 text-gray-800"
+                  onClick={() => setEditing({row: i, col: j})}
+                >
+                  {editing?.row === i && editing?.col === j ? (
+                    <input
+                      autoFocus
+                      defaultValue={row[j]}
+                      onBlur={(e) => saveCell(i, j, e.target.value)}
+                      className="w-full"
+                    />
+                  ) : (
+                    row[j]
+                  )}
+                </td>
+              ))}
+
+              <td className="border p-2 text-center">
+                <button
+                  className="text-red-500"
+                  onClick={() => deleteRow(i)}
+                >
+                  削除
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      {/* 合計金額 */}
+      <p className="mt-4 text-xl font-bold text-gray-900">
+        合計金額：{total.toLocaleString()} 円
+      </p>
+
+      {/* 円グラフ＋凡例（横並び） */}
+      <div className="mt-6 flex flex-row items-start space-x-8 w-full">
+        {/* 円グラフ */}
+        <div className="flex flex-col items-center">
+          <h2 className="text-xl font-bold mb-2">費用の割合</h2>
+          <PieChart data={pieData} />
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        {/* 凡例（グラフの右側） */}
+        <div className="space-y-2">
+          {pieData.map((d, i) => (
+            <div key={i} className="flex items-center space-x-2">
+              <span
+                className="block w-4 h-4 rounded shrink-0"
+                style={{ backgroundColor: "black" }}
+              />
+              <span className="text-gray-800">
+                {d.label}：{d.value.toLocaleString()}円
+              </span>
+            </div>
+          ))}
         </div>
-      </main>
+      </div>
+
+
+
+      {/* 追加フォーム */}
+      <form
+        onSubmit={async (e) => {
+          e.preventDefault();
+          const form = e.target as HTMLFormElement;
+          const data = {
+            項目: form.item.value,
+            費用: form.amount.value,
+            備考: form.note.value,
+          };
+
+          await fetch("/api/add", {
+            method: "POST",
+            body: JSON.stringify(data),
+          });
+
+          location.reload();
+        }}
+        className="mt-6 p-4 bg-white/80 backdrop-blur-sm rounded shadow"
+      >
+        <h2 className="font-bold mb-2">項目を追加</h2>
+
+        <input name="item" placeholder="項目" className="border p-2 mr-2" />
+        <input name="amount" placeholder="金額" className="border p-2 mr-2" />
+        <input name="note" placeholder="メモ" className="border p-2 mr-2" />
+
+        <button className="bg-pink-500 text-white px-4 py-2 rounded">
+          追加
+        </button>
+      </form>
     </div>
-  );
+  )
 }
+
+function PieChart({ data }: { data: { label: string; value: number }[] }) {
+  const total = data.reduce((s, d) => s + d.value, 0)
+  let cumulative = 0
+
+  return (
+    <svg width="220" height="220" viewBox="0 0 42 42">
+      {data.map((d, i) => {
+        const start = (cumulative / total) * 100
+        cumulative += d.value
+        const end = (cumulative / total) * 100
+
+        return (
+          <circle
+            key={i}
+            r="15.915"
+            cx="21"
+            cy="21"
+            fill="transparent"
+            strokeWidth="10"
+            strokeDasharray={`${end - start} ${100 - (end - start)}`}
+            strokeDashoffset={-start}
+            stroke={COLORS[i % COLORS.length]}
+          />
+        )
+      })}
+    </svg>
+  )
+}
+

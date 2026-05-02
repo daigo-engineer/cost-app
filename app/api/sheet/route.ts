@@ -1,3 +1,6 @@
+export const dynamic = "force-dynamic";
+
+import { NextResponse } from "next/server";
 import { google } from "googleapis";
 
 export async function GET() {
@@ -12,16 +15,17 @@ export async function GET() {
 
     const sheets = google.sheets({ version: "v4", auth });
 
-    const response = await sheets.spreadsheets.values.get({
+    const res = await sheets.spreadsheets.values.get({
       spreadsheetId: process.env.SHEET_ID,
-      range: "A1:Z1000",
+      range: "shered_budget!A1:D",
     });
 
-    return Response.json({
-      data: response.data.values || [],
-    });
+    return NextResponse.json(
+      { data: res.data.values || [] },
+      { headers: { "Cache-Control": "no-store" } }
+    );
   } catch (error) {
     console.error(error);
-    return Response.json({ error: "Failed to fetch sheet" }, { status: 500 });
+    return NextResponse.json({ error: "Failed to fetch sheet" }, { status: 500 });
   }
 }

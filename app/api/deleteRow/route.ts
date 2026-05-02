@@ -14,7 +14,7 @@ export async function POST(req: Request) {
 
   const sheets = google.sheets({ version: "v4", auth });
 
-  const sheetId = 123456789; // ← あなたの gid を入れる
+  const sheetId = 329503197; // ← あなたの gid を入れる
 
   // ① 行削除
   await sheets.spreadsheets.batchUpdate({

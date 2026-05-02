@@ -6,15 +6,17 @@ export async function POST(req: Request) {
 
   const auth = new google.auth.GoogleAuth({
     credentials: {
-      client_email: process.env.GOOGLE_CLIENT_EMAIL,
-      private_key: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
+      client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
+      private_key: process.env.GOOGLE_PRIVATE_KEY,
     },
     scopes: ["https://www.googleapis.com/auth/spreadsheets"],
   });
 
   const sheets = google.sheets({ version: "v4", auth });
 
-  const range = `A${row + 2}:${String.fromCharCode(65 + col)}${row + 2}`;
+  // 編集する列だけを更新
+  const colLetter = String.fromCharCode(65 + col);
+  const range = `shered_budget!${colLetter}${row + 2}`;
 
   await sheets.spreadsheets.values.update({
     spreadsheetId: process.env.SHEET_ID,

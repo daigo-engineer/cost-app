@@ -141,20 +141,23 @@ export default function Home() {
         onSubmit={async (e) => {
           e.preventDefault();
           const form = e.target as HTMLFormElement;
+          const nextNo = body.length + 1;
+
           const data = {
-            項目: form.item.value,
-            費用: form.amount.value,
-            備考: form.note.value,
+            no: nextNo,
+            item: (form.item as HTMLInputElement).value,
+            amount: (form.amount as HTMLInputElement).value,
+            note: (form.note as HTMLInputElement).value,
           };
 
           await fetch("/api/add", {
             method: "POST",
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data),
           });
 
           location.reload();
         }}
-        className="mt-6 p-4 bg-white/80 backdrop-blur-sm rounded shadow"
       >
         <h2 className="font-bold mb-2">項目を追加</h2>
 

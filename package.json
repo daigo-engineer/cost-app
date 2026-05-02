@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "google-auth-library": "^10.6.2",
     "googleapis": "^171.4.0",
     "next": "13.5.6",
     "react": "18.2.0",
@@ -18,11 +19,11 @@
     "@types/node": "^18",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "autoprefixer": "10.4.17",
     "eslint": "8.56.0",
     "eslint-config-next": "13.5.6",
-    "tailwindcss": "3.4.3",
     "postcss": "8.4.31",
-    "autoprefixer": "10.4.17",
+    "tailwindcss": "3.4.3",
     "typescript": "5.4.5"
   }
 }

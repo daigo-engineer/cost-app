@@ -41,19 +41,17 @@ export default function Home() {
   const [header, ...body] = rows
 
   // 合計金額
-  const total = body.reduce((sum, row) => {
-    const cost = Number(row[2] || 0)
-    return sum + cost
-  }, 0)
+  const total = body.reduce((sum, row) => sum + Number(row[6] || 0), 0)
 
   // 円グラフ用データ（0円は除外）
   const pieData = body
     .map(row => ({
-      label: row[1],
-      value: Number(row[2])
+      label: row[1],             // 項目
+      value: Number(row[6] || 0) // 適用金額
     }))
     .filter(d => d.value > 0)
     .sort((a, b) => b.value - a.value);
+
 
   return (
     <div className="p-6">
@@ -147,7 +145,9 @@ export default function Home() {
           const data = {
             no: nextNo,
             item: (form.item as HTMLInputElement).value,
-            amount: (form.amount as HTMLInputElement).value,
+            unit: (form.unit as HTMLInputElement).value,
+            qty: (form.qty as HTMLInputElement).value,
+            discount: (form.discount as HTMLInputElement).value,
             note: (form.note as HTMLInputElement).value,
           };
 
@@ -163,8 +163,11 @@ export default function Home() {
         <h2 className="font-bold mb-2">項目を追加</h2>
 
         <input name="item" placeholder="項目" className="border p-2 mr-2" />
-        <input name="amount" placeholder="金額" className="border p-2 mr-2" />
-        <input name="note" placeholder="メモ" className="border p-2 mr-2" />
+        <input name="unit" placeholder="単価" className="border p-2 mr-2" />
+        <input name="qty" placeholder="数量" className="border p-2 mr-2" />
+        <input name="discount" placeholder="ディスカウント" className="border p-2 mr-2" />
+        <input name="note" placeholder="備考" className="border p-2 mr-2" />
+
 
         <button className="bg-pink-500 text-white px-4 py-2 rounded">
           追加

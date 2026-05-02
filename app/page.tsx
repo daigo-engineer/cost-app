@@ -53,6 +53,7 @@ export default function Home() {
       value: Number(row[2])
     }))
     .filter(d => d.value > 0)
+    .sort((a, b) => b.value - a.value);
 
   return (
     <div className="p-6">

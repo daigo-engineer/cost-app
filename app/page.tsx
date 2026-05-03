@@ -121,31 +121,31 @@ export default function Home() {
               <table className="min-w-max border border-gray-500 border-collapse bg-white/80 backdrop-blur-sm rounded-lg shadow">
                 <thead className="bg-gray-100">
                   <tr>
-                    <th className="border p-2">No.</th>
-                    <th className="border p-2">項目</th>
-                    <th className="border p-2">単価</th>
-                    <th className="border p-2">数量</th>
-                    <th className="border p-2">費用</th>
-                    <th className="border p-2">ディスカウント</th>
-                    <th className="border p-2">適用金額</th>
-                    <th className="border p-2">備考</th>
-                    <th className="border p-2">操作</th>
+                    <th className="border p-2 whitespace-nowrap">No.</th>
+                    <th className="border p-2 whitespace-nowrap">項目</th>
+                    <th className="border p-2 whitespace-nowrap">単価</th>
+                    <th className="border p-2 whitespace-nowrap">数量</th>
+                    <th className="border p-2 whitespace-nowrap">費用</th>
+                    <th className="border p-2 whitespace-nowrap">ディスカウント</th>
+                    <th className="border p-2 whitespace-nowrap">適用金額</th>
+                    <th className="border p-2 whitespace-nowrap">備考</th>
+                    <th className="border p-2 whitespace-nowrap">操作</th>
                   </tr>
                 </thead>
 
                 <tbody>
                   {rowsInCategory.map((row, i) => (
                     <tr key={row[0]}>
-                      <td className="border p-2">{row[0]}</td>
-                      <td className="border p-2">{row[2]}</td>
-                      <td className="border p-2">{row[3]}</td>
-                      <td className="border p-2">{row[4]}</td>
-                      <td className="border p-2">{row[5]}</td>
-                      <td className="border p-2">{row[6]}</td>
-                      <td className="border p-2">{row[7]}</td>
-                      <td className="border p-2">{row[8]}</td>
+                      <td className="border p-2 whitespace-nowrap">{row[0]}</td>
+                      <td className="border p-2 whitespace-nowrap">{row[2]}</td>
+                      <td className="border p-2 whitespace-nowrap">{row[3]}</td>
+                      <td className="border p-2 whitespace-nowrap">{row[4]}</td>
+                      <td className="border p-2 whitespace-nowrap">{row[5]}</td>
+                      <td className="border p-2 whitespace-nowrap">{row[6]}</td>
+                      <td className="border p-2 whitespace-nowrap">{row[7]}</td>
+                      <td className="border p-2 whitespace-nowrap">{row[8]}</td>
 
-                      <td className="border p-2 text-center">
+                      <td className="border p-2 whitespace-nowrap text-center">
                         <button
                           className="text-red-500"
                           onClick={() => deleteRow(i)}

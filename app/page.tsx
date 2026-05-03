@@ -73,17 +73,15 @@ export default function Home() {
       </h1>
 
       {Object.entries(grouped).map(([category, rowsInCategory]) => {
-        // 小計（H列 = 適用金額）
         const subtotal = rowsInCategory.reduce(
           (sum, row) => sum + Number(row[7] || 0),
           0
         );
 
-        // カテゴリ専用の円グラフデータ
         const pieDataForCategory = rowsInCategory
           .map(row => ({
-            label: row[2],             // C列: 項目名
-            value: Number(row[7] || 0) // H列: 適用金額
+            label: row[2],
+            value: Number(row[7] || 0)
           }))
           .filter(d => d.value > 0)
           .sort((a, b) => b.value - a.value);
@@ -119,54 +117,57 @@ export default function Home() {
             </div>
 
             {/* カテゴリ内のテーブル */}
-            <table className="w-full border border-gray-500 border-collapse bg-white/80 backdrop-blur-sm rounded-lg shadow">
-              <thead className="bg-gray-100">
-                <tr>
-                  <th className="border p-2">No.</th>
-                  <th className="border p-2">項目</th>
-                  <th className="border p-2">単価</th>
-                  <th className="border p-2">数量</th>
-                  <th className="border p-2">費用</th>
-                  <th className="border p-2">ディスカウント</th>
-                  <th className="border p-2">適用金額</th>
-                  <th className="border p-2">備考</th>
-                  <th className="border p-2">操作</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {rowsInCategory.map((row, i) => (
-                  <tr key={row[0]}>
-                    <td className="border p-2">{row[0]}</td>
-                    <td className="border p-2">{row[2]}</td>
-                    <td className="border p-2">{row[3]}</td>
-                    <td className="border p-2">{row[4]}</td>
-                    <td className="border p-2">{row[5]}</td>
-                    <td className="border p-2">{row[6]}</td>
-                    <td className="border p-2">{row[7]}</td>
-                    <td className="border p-2">{row[8]}</td>
-
-                    <td className="border p-2 text-center">
-                      <button
-                        className="text-red-500"
-                        onClick={() => deleteRow(i)}
-                      >
-                        削除
-                      </button>
-                    </td>
+            <div className="overflow-x-auto">
+              <table className="min-w-max border border-gray-500 border-collapse bg-white/80 backdrop-blur-sm rounded-lg shadow">
+                <thead className="bg-gray-100">
+                  <tr>
+                    <th className="border p-2">No.</th>
+                    <th className="border p-2">項目</th>
+                    <th className="border p-2">単価</th>
+                    <th className="border p-2">数量</th>
+                    <th className="border p-2">費用</th>
+                    <th className="border p-2">ディスカウント</th>
+                    <th className="border p-2">適用金額</th>
+                    <th className="border p-2">備考</th>
+                    <th className="border p-2">操作</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+
+                <tbody>
+                  {rowsInCategory.map((row, i) => (
+                    <tr key={row[0]}>
+                      <td className="border p-2">{row[0]}</td>
+                      <td className="border p-2">{row[2]}</td>
+                      <td className="border p-2">{row[3]}</td>
+                      <td className="border p-2">{row[4]}</td>
+                      <td className="border p-2">{row[5]}</td>
+                      <td className="border p-2">{row[6]}</td>
+                      <td className="border p-2">{row[7]}</td>
+                      <td className="border p-2">{row[8]}</td>
+
+                      <td className="border p-2 text-center">
+                        <button
+                          className="text-red-500"
+                          onClick={() => deleteRow(i)}
+                        >
+                          削除
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
           </div>
         );
       })}
 
+
       {/* 合計金額 */}
-      <p className="mt-4 text-xl font-bold text-gray-900">
-        合計金額：{total.toLocaleString()} 円
-      </p>
+      <h2 className="text-2xl font-bold mt-8 mb-4">
+        合計費用（合計：{total.toLocaleString()} 円）
+      </h2>
 
       {/* 円グラフ＋凡例（横並び） */}
       <div className="mt-6 flex flex-row items-start space-x-8 w-full">

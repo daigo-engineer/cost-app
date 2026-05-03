@@ -108,6 +108,7 @@ export default function Home() {
           <option value="写真＆動画">写真＆動画</option>
           <option value="【Guest①】ギフト">【Guest①】ギフト</option>
           <option value="【Guest②】ペーパーアイテム">【Guest②】ペーパーアイテム</option>
+          <option value="前撮り">前撮り</option>
           <option value="その他">その他</option>
         </select>
         <input name="item" placeholder="項目" className="border p-2 mr-2" />

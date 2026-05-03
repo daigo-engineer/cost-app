@@ -118,7 +118,7 @@ export default function Home() {
 
             {/* カテゴリ内のテーブル */}
             <div className="overflow-x-auto">
-              <table className="min-w-max border border-gray-500 border-collapse bg-white/80 backdrop-blur-sm rounded-lg shadow">
+              <table className="w-max border border-gray-500 border-collapse bg-white/80 backdrop-blur-sm rounded-lg shadow">
                 <thead className="bg-gray-100">
                   <tr>
                     <th className="border p-2 whitespace-nowrap">No.</th>
@@ -158,7 +158,6 @@ export default function Home() {
                 </tbody>
               </table>
             </div>
-
           </div>
         );
       })}

@@ -295,7 +295,7 @@ export default function Home() {
                       </td>
 
                       {/* 適用金額（編集しないならそのまま） */}
-                      <td className="border p-2 whitespace-nowrap text-xs">{row[5]}</td>
+                      <td className="border p-2 whitespace-nowrap text-xs">{row[7]}</td>
 
 
                       {/* 備考（col=8） */}

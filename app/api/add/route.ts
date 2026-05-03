@@ -36,26 +36,33 @@ export async function POST(req: Request) {
   const rows = read.data.values || [];
 
   // ② 追加したいカテゴリの最後の行を探す
-  // rows は A2:I の全行
-    const normalize = (s: string) =>
-    s.replace(/\s+/g, "").normalize("NFKC");
 
+    // 正規化関数
+    const normalize = (s) => s.replace(/\s+/g, "").normalize("NFKC");
     const target = normalize(body.category);
 
-    let lastIndex = -1;
+    let lastRowIndexOnSheet = -1;
 
+    // 生の rows をループして、最後にそのカテゴリが出現する「行インデックス」を見つける
     for (let i = 0; i < rows.length; i++) {
-        const cat = normalize(rows[i][1] || "");
-
-        if (cat === target) {
-            lastIndex = i;
-        }
+    const cat = normalize(rows[i][1] || ""); // B列（カテゴリ）
+    if (cat === target) {
+        lastRowIndexOnSheet = i; // 0-indexed の行番号を保持
+    }
     }
 
-    // 挿入位置（シート上の行番号）
-    const insertIndex = lastIndex >= 0
-    ? lastIndex + 2  // A2 が rows[0] なので +2
-    : rows.length + 2;
+    // もしそのカテゴリがまだ1つもなければ、一番最後に追加
+    let insertRowNumber;
+    if (lastRowIndexOnSheet === -1) {
+    insertRowNumber = rows.length + 2; // ヘッダー分などを考慮
+    } else {
+    // 最後に見つかった行の「次」の行番号（1-indexed）
+    // rows[0] がスプレッドシートの2行目(A2)から始まっている場合、
+    // シート上の行番号は i + 2 となるため、その次は i + 3
+    insertRowNumber = lastRowIndexOnSheet + 3; 
+    }
+
+    const insertIndex = insertRowNumber;
 
 
   // ③ 行を挿入

@@ -7,7 +7,9 @@ const COLORS = ["#ff6384", "#36a2eb", "#ffce56", "#4bc0c0"];
 export default function Home() {
   const [rows, setRows] = useState<string[][]>([])
   const [loading, setLoading] = useState(true)
-  const [editing, setEditing] = useState<{row: number, col: number} | null>(null);
+
+  const [editingRow, setEditingRow] = useState<number | null>(null)
+  const [tempRow, setTempRow] = useState<string[]>([])
   // セル更新
   async function saveCell(row: number, col: number, value: string) {
     await fetch("/api/update", {
@@ -198,23 +200,20 @@ export default function Home() {
 
                       {/* 項目（col=2） */}
                       <td
-                        className="border p-2 whitespace-nowrap text-xs cursor-pointer"
-                        onClick={() => setEditing({ row: i, col: 2 })}
+                        className="border p-2 text-xs cursor-pointer"
+                        onClick={() => {
+                          setEditingRow(i);
+                          setTempRow([...row]);
+                        }}
                       >
-                        {editing && editing.row === i && editing.col === 2 ? (
+                        {editingRow === i ? (
                           <input
-                            autoFocus
-                            defaultValue={row[2]}
                             className="border px-1 py-0.5 text-xs"
-                            onBlur={async (e) => {
-                              await saveCell(i, 2, e.target.value);
-                              setEditing(null);
-                            }}
-                            onKeyDown={async (e) => {
-                              if (e.key === "Enter") {
-                                await saveCell(i, 2, (e.target as HTMLInputElement).value);
-                                setEditing(null);
-                              }
+                            defaultValue={row[2]}
+                            onChange={(e) => {
+                              const newRow = [...tempRow];
+                              newRow[2] = e.target.value;
+                              setTempRow(newRow);
                             }}
                           />
                         ) : (
@@ -222,25 +221,23 @@ export default function Home() {
                         )}
                       </td>
 
+
                       {/* 単価（col=3） */}
                       <td
-                        className="border p-2 whitespace-nowrap text-xs cursor-pointer"
-                        onClick={() => setEditing({ row: i, col: 3 })}
+                        className="border p-2 text-xs cursor-pointer"
+                        onClick={() => {
+                          setEditingRow(i);
+                          setTempRow([...row]);
+                        }}
                       >
-                        {editing && editing.row === i && editing.col === 3 ? (
+                        {editingRow === i ? (
                           <input
-                            autoFocus
-                            defaultValue={row[3]}
                             className="border px-1 py-0.5 text-xs"
-                            onBlur={async (e) => {
-                              await saveCell(i, 3, e.target.value);
-                              setEditing(null);
-                            }}
-                            onKeyDown={async (e) => {
-                              if (e.key === "Enter") {
-                                await saveCell(i, 3, (e.target as HTMLInputElement).value);
-                                setEditing(null);
-                              }
+                            defaultValue={row[3]}
+                            onChange={(e) => {
+                              const newRow = [...tempRow];
+                              newRow[3] = e.target.value;
+                              setTempRow(newRow);
                             }}
                           />
                         ) : (
@@ -250,23 +247,20 @@ export default function Home() {
 
                       {/* 数量（col=4） */}
                       <td
-                        className="border p-2 whitespace-nowrap text-xs cursor-pointer"
-                        onClick={() => setEditing({ row: i, col: 4 })}
+                        className="border p-2 text-xs cursor-pointer"
+                        onClick={() => {
+                          setEditingRow(i);
+                          setTempRow([...row]);
+                        }}
                       >
-                        {editing && editing.row === i && editing.col === 4 ? (
+                        {editingRow === i ? (
                           <input
-                            autoFocus
-                            defaultValue={row[4]}
                             className="border px-1 py-0.5 text-xs"
-                            onBlur={async (e) => {
-                              await saveCell(i, 4, e.target.value);
-                              setEditing(null);
-                            }}
-                            onKeyDown={async (e) => {
-                              if (e.key === "Enter") {
-                                await saveCell(i, 4, (e.target as HTMLInputElement).value);
-                                setEditing(null);
-                              }
+                            defaultValue={row[4]}
+                            onChange={(e) => {
+                              const newRow = [...tempRow];
+                              newRow[4] = e.target.value;
+                              setTempRow(newRow);
                             }}
                           />
                         ) : (
@@ -279,23 +273,20 @@ export default function Home() {
 
                       {/* ディスカウント（col=6） */}
                       <td
-                        className="border p-2 whitespace-nowrap text-xs cursor-pointer"
-                        onClick={() => setEditing({ row: i, col: 6 })}
+                        className="border p-2 text-xs cursor-pointer"
+                        onClick={() => {
+                          setEditingRow(i);
+                          setTempRow([...row]);
+                        }}
                       >
-                        {editing && editing.row === i && editing.col === 6 ? (
+                        {editingRow === i ? (
                           <input
-                            autoFocus
-                            defaultValue={row[6]}
                             className="border px-1 py-0.5 text-xs"
-                            onBlur={async (e) => {
-                              await saveCell(i, 6, e.target.value);
-                              setEditing(null);
-                            }}
-                            onKeyDown={async (e) => {
-                              if (e.key === "Enter") {
-                                await saveCell(i, 6, (e.target as HTMLInputElement).value);
-                                setEditing(null);
-                              }
+                            defaultValue={row[6]}
+                            onChange={(e) => {
+                              const newRow = [...tempRow];
+                              newRow[6] = e.target.value;
+                              setTempRow(newRow);
                             }}
                           />
                         ) : (
@@ -309,23 +300,20 @@ export default function Home() {
 
                       {/* 備考（col=8） */}
                       <td
-                        className="border p-2 whitespace-nowrap text-xs cursor-pointer"
-                        onClick={() => setEditing({ row: i, col: 8 })}
+                        className="border p-2 text-xs cursor-pointer"
+                        onClick={() => {
+                          setEditingRow(i);
+                          setTempRow([...row]);
+                        }}
                       >
-                        {editing && editing.row === i && editing.col === 8 ? (
+                        {editingRow === i ? (
                           <input
-                            autoFocus
-                            defaultValue={row[8]}
                             className="border px-1 py-0.5 text-xs"
-                            onBlur={async (e) => {
-                              await saveCell(i, 8, e.target.value);
-                              setEditing(null);
-                            }}
-                            onKeyDown={async (e) => {
-                              if (e.key === "Enter") {
-                                await saveCell(i, 8, (e.target as HTMLInputElement).value);
-                                setEditing(null);
-                              }
+                            defaultValue={row[8]}
+                            onChange={(e) => {
+                              const newRow = [...tempRow];
+                              newRow[8] = e.target.value;
+                              setTempRow(newRow);
                             }}
                           />
                         ) : (
@@ -333,16 +321,31 @@ export default function Home() {
                         )}
                       </td>
 
-                      {/* 削除ボタン */}
-                      <td className="border p-2 whitespace-nowrap text-center text-xs">
-                        <button
-                          className="text-red-500 text-xs"
-                          onClick={() => deleteRow(Number(row[0]))}
-                        >
-                          削除
-                        </button>
+                      {/* 行末：削除 or 保存 */}
+                      <td className="border p-2 text-center text-xs">
+                        {editingRow === i ? (
+                          <button
+                            className="text-blue-500"
+                            onClick={async () => {
+                              // tempRow の内容を saveCell で反映
+                              for (let col = 2; col <= 8; col++) {
+                                await saveCell(i, col, tempRow[col]);
+                              }
+                              setEditingRow(null);
+                              location.reload();
+                            }}
+                          >
+                            保存
+                          </button>
+                        ) : (
+                          <button
+                            className="text-red-500"
+                            onClick={() => deleteRow(Number(row[0]))}
+                          >
+                            削除
+                          </button>
+                        )}
                       </td>
-
                     </tr>
                   ))}
                 </tbody>

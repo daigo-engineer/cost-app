@@ -67,7 +67,7 @@ export default function Home() {
 
 
   return (
-    <div className="p-6">
+    <div className="p-6 pb-96 min-h-screen">
       <h1 className="text-2xl font-bold mb-4 text-gray-900">
         結婚式費用一覧
       </h1>
@@ -117,8 +117,8 @@ export default function Home() {
             </div>
 
             {/* カテゴリ内のテーブル */}
-            <div className="overflow-x-auto">
-              <table className="table-auto w-[1200px] border border-gray-500 border-collapse bg-white/80 backdrop-blur-sm rounded-lg shadow">
+            <div className="w-full overflow-x-auto">
+              <table className="min-w-max border border-gray-500 border-collapse bg-white/80 backdrop-blur-sm rounded-lg shadow">
                 <thead className="bg-gray-100">
                   <tr>
                     <th className="border p-2 whitespace-nowrap">No.</th>
@@ -159,6 +159,7 @@ export default function Home() {
               </table>
             </div>
 
+
           </div>
         );
       })}
@@ -166,7 +167,11 @@ export default function Home() {
 
       {/* 合計金額 */}
       <h2 className="text-2xl font-bold mt-8 mb-4">
-        合計費用（合計：{total.toLocaleString()} 円）
+        中計費用（中計：{total.toLocaleString()} 円）
+      </h2>
+
+      <h2 className="text-2xl font-bold mt-8 mb-4">
+        合計費用（合計（Tax in）：{Math.floor(total * 1.1).toLocaleString()} 円）
       </h2>
 
       {/* 円グラフ＋凡例（横並び） */}
@@ -197,6 +202,7 @@ export default function Home() {
 
       {/* 追加フォーム */}
       <form
+        className="mb-[200px]"
         onSubmit={async (e) => {
           e.preventDefault();
           const form = e.target as HTMLFormElement;
@@ -246,6 +252,7 @@ export default function Home() {
           追加
         </button>
       </form>
+      <div className="h-[300px]"></div> 
     </div>
   )
 }

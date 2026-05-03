@@ -12,11 +12,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ja">
-      <body>
-        <div className="bg-glow"></div>
+    <html lang="ja" className="h-full">
+      <body className="min-h-screen relative">
+        <div className="bg-glow absolute inset-0 -z-10"></div>
         {children}
       </body>
     </html>
   );
 }
+

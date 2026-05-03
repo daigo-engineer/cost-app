@@ -67,8 +67,8 @@ export default function Home() {
 
 
   return (
-    <div className="p-6 pb-96 min-h-screen">
-      <h1 className="text-2xl font-bold mb-4 text-gray-900">
+    <div className="p-6 pb-96 min-h-screen text-xs">
+      <h1 className="text-2xl font-bold mb-4 text-gray-900 text-xs">
         結婚式費用一覧
       </h1>
 
@@ -87,28 +87,28 @@ export default function Home() {
           .sort((a, b) => b.value - a.value);
 
         return (
-          <div key={category} className="mb-16">
+          <div key={category} className="mb-16 text-xs">
 
             {/* 大項目 + 小計 */}
-            <h2 className="text-2xl font-bold mb-2">
+            <h2 className="text-2xl font-bold mb-2 text-xs">
               {category}（小計：{subtotal.toLocaleString()} 円）
             </h2>
 
             {/* カテゴリ専用の円グラフ */}
-            <div className="flex flex-row items-start space-x-8 mt-4 mb-6">
-              <div className="flex flex-col items-center">
-                <h3 className="text-lg font-bold mb-2">{category} の内訳</h3>
+            <div className="flex flex-row items-start space-x-8 mt-4 mb-6 text-xs">
+              <div className="flex flex-col items-center text-xs">
+                <h3 className="text-lg font-bold mb-2 text-xs">{category} の内訳</h3>
                 <PieChart data={pieDataForCategory} />
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-2 text-xs">
                 {pieDataForCategory.map((d, i) => (
-                  <div key={i} className="flex items-center space-x-2">
+                  <div key={i} className="flex items-center space-x-2 text-xs">
                     <span
-                      className="block w-4 h-4 rounded shrink-0"
+                      className="block w-4 h-4 rounded shrink-0 text-xs"
                       style={{ backgroundColor: COLORS[i % COLORS.length] }}
                     />
-                    <span className="text-gray-800">
+                    <span className="text-gray-800 text-xs">
                       {d.label}：{d.value.toLocaleString()}円
                     </span>
                   </div>
@@ -118,36 +118,36 @@ export default function Home() {
 
             {/* カテゴリ内のテーブル */}
             <div className="overflow-x-auto">
-              <table className="min-w-[900px] border border-gray-500 border-collapse bg-white/80 backdrop-blur-sm rounded-lg shadow">
-                <thead className="bg-gray-100">
+              <table className="min-w-max border border-gray-500 border-collapse bg-white/80 backdrop-blur-sm rounded-lg shadow text-xs">
+                <thead className="bg-gray-100 text-xs">
                   <tr>
-                    <th className="border p-2 whitespace-nowrap">No.</th>
-                    <th className="border p-2 whitespace-nowrap">項目</th>
-                    <th className="border p-2 whitespace-nowrap">単価</th>
-                    <th className="border p-2 whitespace-nowrap">数量</th>
-                    <th className="border p-2 whitespace-nowrap">費用</th>
-                    <th className="border p-2 whitespace-nowrap">ディスカウント</th>
-                    <th className="border p-2 whitespace-nowrap">適用金額</th>
-                    <th className="border p-2 whitespace-nowrap">備考</th>
-                    <th className="border p-2 whitespace-nowrap">操作</th>
+                    <th className="border p-2 whitespace-nowrap text-xs">No.</th>
+                    <th className="border p-2 whitespace-nowrap text-xs">項目</th>
+                    <th className="border p-2 whitespace-nowrap text-xs">単価</th>
+                    <th className="border p-2 whitespace-nowrap text-xs">数量</th>
+                    <th className="border p-2 whitespace-nowrap text-xs">費用</th>
+                    <th className="border p-2 whitespace-nowrap text-xs">ディスカウント</th>
+                    <th className="border p-2 whitespace-nowrap text-xs">適用金額</th>
+                    <th className="border p-2 whitespace-nowrap text-xs">備考</th>
+                    <th className="border p-2 whitespace-nowrap text-xs">操作</th>
                   </tr>
                 </thead>
 
                 <tbody>
                   {rowsInCategory.map((row, i) => (
                     <tr key={row[0]}>
-                      <td className="border p-2 whitespace-nowrap">{row[0]}</td>
-                      <td className="border p-2 whitespace-nowrap">{row[2]}</td>
-                      <td className="border p-2 whitespace-nowrap">{row[3]}</td>
-                      <td className="border p-2 whitespace-nowrap">{row[4]}</td>
-                      <td className="border p-2 whitespace-nowrap">{row[5]}</td>
-                      <td className="border p-2 whitespace-nowrap">{row[6]}</td>
-                      <td className="border p-2 whitespace-nowrap">{row[7]}</td>
-                      <td className="border p-2 whitespace-nowrap">{row[8]}</td>
+                      <td className="border p-2 whitespace-nowrap text-xs">{row[0]}</td>
+                      <td className="border p-2 whitespace-nowrap text-xs">{row[2]}</td>
+                      <td className="border p-2 whitespace-nowrap text-xs">{row[3]}</td>
+                      <td className="border p-2 whitespace-nowrap text-xs">{row[4]}</td>
+                      <td className="border p-2 whitespace-nowrap text-xs">{row[5]}</td>
+                      <td className="border p-2 whitespace-nowrap text-xs">{row[6]}</td>
+                      <td className="border p-2 whitespace-nowrap text-xs">{row[7]}</td>
+                      <td className="border p-2 whitespace-nowrap text-xs">{row[8]}</td>
 
-                      <td className="border p-2 whitespace-nowrap text-center">
+                      <td className="border p-2 whitespace-nowrap text-center text-xs">
                         <button
-                          className="text-red-500"
+                          className="text-red-500 text-xs"
                           onClick={() => deleteRow(i)}
                         >
                           削除
@@ -166,31 +166,31 @@ export default function Home() {
 
 
       {/* 合計金額 */}
-      <h2 className="text-2xl font-bold mt-8 mb-4">
+      <h2 className="text-2xl font-bold mt-8 mb-4 text-xs">
         中計費用（中計：{total.toLocaleString()} 円）
       </h2>
 
-      <h2 className="text-2xl font-bold mt-8 mb-4">
+      <h2 className="text-2xl font-bold mt-8 mb-4 text-xs">
         合計費用（合計（Tax in）：{Math.floor(total * 1.1).toLocaleString()} 円）
       </h2>
 
       {/* 円グラフ＋凡例（横並び） */}
-      <div className="mt-6 flex flex-row items-start space-x-8 w-full">
+      <div className="mt-6 flex flex-row items-start space-x-8 w-full text-xs">
         {/* 円グラフ */}
-        <div className="flex flex-col items-center">
-          <h2 className="text-xl font-bold mb-2">費用の割合</h2>
+        <div className="flex flex-col items-center text-xs">
+          <h2 className="text-xl font-bold mb-2 text-xs">費用の割合</h2>
           <PieChart data={pieData} />
         </div>
 
         {/* 凡例（グラフの右側） */}
-        <div className="space-y-2">
+        <div className="space-y-2 text-xs">
           {pieData.map((d, i) => (
-            <div key={i} className="flex items-center space-x-2">
+            <div key={i} className="flex items-center space-x-2 text-xs">
               <span
-                className="block w-4 h-4 rounded shrink-0"
+                className="block w-4 h-4 rounded shrink-0 text-xs"
                 style={{ backgroundColor: COLORS[i % COLORS.length] }}
               />
-              <span className="text-gray-800">
+              <span className="text-gray-800 text-xs">
                 {d.label}：{d.value.toLocaleString()}円
               </span>
             </div>

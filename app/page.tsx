@@ -117,8 +117,8 @@ export default function Home() {
             </div>
 
             {/* カテゴリ内のテーブル */}
-            <div className="w-full overflow-x-auto">
-              <table className="min-w-max border border-gray-500 border-collapse bg-white/80 backdrop-blur-sm rounded-lg shadow">
+            <div className="overflow-x-auto">
+              <table className="min-w-[900px] border border-gray-500 border-collapse bg-white/80 backdrop-blur-sm rounded-lg shadow">
                 <thead className="bg-gray-100">
                   <tr>
                     <th className="border p-2 whitespace-nowrap">No.</th>

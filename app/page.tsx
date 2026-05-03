@@ -18,10 +18,10 @@ export default function Home() {
   }
 
   // 行削除
-  async function deleteRow(index: number) {
+  async function deleteRow(no: number) {
     await fetch("/api/deleteRow", {
       method: "POST",
-      body: JSON.stringify({ index }),
+      body: JSON.stringify({ no }),
     });
     location.reload();
   }
@@ -75,7 +75,8 @@ export default function Home() {
         onSubmit={async (e) => {
           e.preventDefault();
           const form = e.target as HTMLFormElement;
-          const nextNo = body.length + 1;
+          const maxNo = Math.max(...rows.slice(1).map(r => Number(r[0])));
+          const nextNo = maxNo + 1;
 
           const data = {
             no: nextNo,
@@ -191,30 +192,162 @@ export default function Home() {
                 <tbody>
                   {rowsInCategory.map((row, i) => (
                     <tr key={row[0]}>
-                      <td className="border p-2 whitespace-nowrap text-xs">{row[0]}</td>
-                      <td className="border p-2 whitespace-nowrap text-xs">{row[2]}</td>
-                      <td className="border p-2 whitespace-nowrap text-xs">{row[3]}</td>
-                      <td className="border p-2 whitespace-nowrap text-xs">{row[4]}</td>
-                      <td className="border p-2 whitespace-nowrap text-xs">{row[5]}</td>
-                      <td className="border p-2 whitespace-nowrap text-xs">{row[6]}</td>
-                      <td className="border p-2 whitespace-nowrap text-xs">{row[7]}</td>
-                      <td className="border p-2 whitespace-nowrap text-xs">{row[8]}</td>
 
+                      {/* No.（編集しないならそのまま） */}
+                      <td className="border p-2 whitespace-nowrap text-xs">{row[0]}</td>
+
+                      {/* 項目（col=2） */}
+                      <td
+                        className="border p-2 whitespace-nowrap text-xs cursor-pointer"
+                        onClick={() => setEditing({ row: i, col: 2 })}
+                      >
+                        {editing && editing.row === i && editing.col === 2 ? (
+                          <input
+                            autoFocus
+                            defaultValue={row[2]}
+                            className="border px-1 py-0.5 text-xs"
+                            onBlur={async (e) => {
+                              await saveCell(i, 2, e.target.value);
+                              setEditing(null);
+                            }}
+                            onKeyDown={async (e) => {
+                              if (e.key === "Enter") {
+                                await saveCell(i, 2, (e.target as HTMLInputElement).value);
+                                setEditing(null);
+                              }
+                            }}
+                          />
+                        ) : (
+                          row[2]
+                        )}
+                      </td>
+
+                      {/* 単価（col=3） */}
+                      <td
+                        className="border p-2 whitespace-nowrap text-xs cursor-pointer"
+                        onClick={() => setEditing({ row: i, col: 3 })}
+                      >
+                        {editing && editing.row === i && editing.col === 3 ? (
+                          <input
+                            autoFocus
+                            defaultValue={row[3]}
+                            className="border px-1 py-0.5 text-xs"
+                            onBlur={async (e) => {
+                              await saveCell(i, 3, e.target.value);
+                              setEditing(null);
+                            }}
+                            onKeyDown={async (e) => {
+                              if (e.key === "Enter") {
+                                await saveCell(i, 3, (e.target as HTMLInputElement).value);
+                                setEditing(null);
+                              }
+                            }}
+                          />
+                        ) : (
+                          row[3]
+                        )}
+                      </td>
+
+                      {/* 数量（col=4） */}
+                      <td
+                        className="border p-2 whitespace-nowrap text-xs cursor-pointer"
+                        onClick={() => setEditing({ row: i, col: 4 })}
+                      >
+                        {editing && editing.row === i && editing.col === 4 ? (
+                          <input
+                            autoFocus
+                            defaultValue={row[4]}
+                            className="border px-1 py-0.5 text-xs"
+                            onBlur={async (e) => {
+                              await saveCell(i, 4, e.target.value);
+                              setEditing(null);
+                            }}
+                            onKeyDown={async (e) => {
+                              if (e.key === "Enter") {
+                                await saveCell(i, 4, (e.target as HTMLInputElement).value);
+                                setEditing(null);
+                              }
+                            }}
+                          />
+                        ) : (
+                          row[4]
+                        )}
+                      </td>
+
+                      {/* 費用（編集しないならそのまま） */}
+                      <td className="border p-2 whitespace-nowrap text-xs">{row[5]}</td>
+
+                      {/* ディスカウント（col=6） */}
+                      <td
+                        className="border p-2 whitespace-nowrap text-xs cursor-pointer"
+                        onClick={() => setEditing({ row: i, col: 6 })}
+                      >
+                        {editing && editing.row === i && editing.col === 6 ? (
+                          <input
+                            autoFocus
+                            defaultValue={row[6]}
+                            className="border px-1 py-0.5 text-xs"
+                            onBlur={async (e) => {
+                              await saveCell(i, 6, e.target.value);
+                              setEditing(null);
+                            }}
+                            onKeyDown={async (e) => {
+                              if (e.key === "Enter") {
+                                await saveCell(i, 6, (e.target as HTMLInputElement).value);
+                                setEditing(null);
+                              }
+                            }}
+                          />
+                        ) : (
+                          row[6]
+                        )}
+                      </td>
+
+                      {/* 適用金額（編集しないならそのまま） */}
+                      <td className="border p-2 whitespace-nowrap text-xs">{row[5]}</td>
+
+
+                      {/* 備考（col=8） */}
+                      <td
+                        className="border p-2 whitespace-nowrap text-xs cursor-pointer"
+                        onClick={() => setEditing({ row: i, col: 8 })}
+                      >
+                        {editing && editing.row === i && editing.col === 8 ? (
+                          <input
+                            autoFocus
+                            defaultValue={row[8]}
+                            className="border px-1 py-0.5 text-xs"
+                            onBlur={async (e) => {
+                              await saveCell(i, 8, e.target.value);
+                              setEditing(null);
+                            }}
+                            onKeyDown={async (e) => {
+                              if (e.key === "Enter") {
+                                await saveCell(i, 8, (e.target as HTMLInputElement).value);
+                                setEditing(null);
+                              }
+                            }}
+                          />
+                        ) : (
+                          row[8]
+                        )}
+                      </td>
+
+                      {/* 削除ボタン */}
                       <td className="border p-2 whitespace-nowrap text-center text-xs">
                         <button
                           className="text-red-500 text-xs"
-                          onClick={() => deleteRow(i)}
+                          onClick={() => deleteRow(Number(row[0]))}
                         >
                           削除
                         </button>
                       </td>
+
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
-
-
           </div>
         );
       })}

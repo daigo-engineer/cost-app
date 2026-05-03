@@ -44,3 +44,7 @@ table, th, td {
 table {
   border-collapse: collapse !important;
 }
+
+html {
+  font-size: 8px;
+}

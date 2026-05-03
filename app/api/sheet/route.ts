@@ -17,7 +17,7 @@ export async function GET() {
 
     const res = await sheets.spreadsheets.values.get({
       spreadsheetId: process.env.SHEET_ID,
-      range: "shered_budget!A1:H",
+      range: "shered_budget!A1:I",
     });
 
     return NextResponse.json(

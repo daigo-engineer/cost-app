@@ -30,16 +30,17 @@ export async function POST(req: Request) {
     range: "shered_budget!A1",
     valueInputOption: "USER_ENTERED",
     requestBody: {
-      values: [[
-        body.no,      // No
-        body.item,         // 項目
-        unit,         // 単価
-        qty,          // 数量
-        cost,         // 費用（自動計算）
-        discount,     // ディスカウント
-        applied,      // 適用金額（自動計算）
-        note          // 備考
-      ]],
+        values: [[
+        body.no,        // A: No
+        body.category,  // B: 大項目
+        body.item,      // C: 項目
+        unit,           // D: 単価
+        qty,            // E: 数量
+        cost,           // F: 費用
+        discount,       // G: ディスカウント
+        applied,        // H: 適用金額
+        body.note,      // I: 備考
+        ]],
     },
   });
 

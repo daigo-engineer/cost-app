@@ -40,17 +40,30 @@ export default function Home() {
 
   const [header, ...body] = rows
 
-  // 合計金額
-  const total = body.reduce((sum, row) => sum + Number(row[6] || 0), 0)
+  // 大項目ごとにグループ化
+  const grouped = body.reduce((acc, row) => {
+    const category = row[1] || "未分類"; // B列
+    if (!acc[category]) acc[category] = [];
+    acc[category].push(row);
+    return acc;
+  }, {} as Record<string, string[][]>);
 
-  // 円グラフ用データ（0円は除外）
-  const pieData = body
-    .map(row => ({
-      label: row[1],             // 項目
-      value: Number(row[6] || 0) // 適用金額
-    }))
-    .filter(d => d.value > 0)
-    .sort((a, b) => b.value - a.value);
+  // 合計金額
+  const total = body.reduce((sum, row) => sum + Number(row[7] || 0), 0)
+
+  // 全体円グラフ用（カテゴリごとの小計）
+  const pieData = Object.entries(grouped).map(([category, rowsInCategory]) => {
+    const subtotal = rowsInCategory.reduce(
+      (sum, row) => sum + Number(row[7] || 0),
+      0
+    );
+
+    return {
+      label: category,   // カテゴリ名
+      value: subtotal    // 小計
+    };
+  })
+  .sort((a, b) => b.value - a.value);
 
 
   return (
@@ -59,50 +72,96 @@ export default function Home() {
         結婚式費用一覧
       </h1>
 
-      <table className="w-full border border-gray-500 border-collapse bg-white/80 backdrop-blur-sm rounded-lg shadow">
-        <thead className="bg-gray-100">
-          <tr>
-            {header.map((h, i) => (
-              <th key={i} className="border p-2">{h}</th>
-            ))}
-            <th className="border p-2">操作</th>
-          </tr>
-        </thead>
+      {Object.entries(grouped).map(([category, rowsInCategory]) => {
+        // 小計（H列 = 適用金額）
+        const subtotal = rowsInCategory.reduce(
+          (sum, row) => sum + Number(row[7] || 0),
+          0
+        );
 
-        <tbody>
-          {body.map((row, i) => (
-            <tr key={i}>
-              {header.map((_, j) => (
-                <td
-                  key={j}
-                  className="border border-gray-800 p-2 text-gray-800"
-                  onClick={() => setEditing({row: i, col: j})}
-                >
-                  {editing?.row === i && editing?.col === j ? (
-                    <input
-                      autoFocus
-                      defaultValue={row[j]}
-                      onBlur={(e) => saveCell(i, j, e.target.value)}
-                      className="w-full"
+        // カテゴリ専用の円グラフデータ
+        const pieDataForCategory = rowsInCategory
+          .map(row => ({
+            label: row[2],             // C列: 項目名
+            value: Number(row[7] || 0) // H列: 適用金額
+          }))
+          .filter(d => d.value > 0)
+          .sort((a, b) => b.value - a.value);
+
+        return (
+          <div key={category} className="mb-16">
+
+            {/* 大項目 + 小計 */}
+            <h2 className="text-2xl font-bold mb-2">
+              {category}（小計：{subtotal.toLocaleString()} 円）
+            </h2>
+
+            {/* カテゴリ専用の円グラフ */}
+            <div className="flex flex-row items-start space-x-8 mt-4 mb-6">
+              <div className="flex flex-col items-center">
+                <h3 className="text-lg font-bold mb-2">{category} の内訳</h3>
+                <PieChart data={pieDataForCategory} />
+              </div>
+
+              <div className="space-y-2">
+                {pieDataForCategory.map((d, i) => (
+                  <div key={i} className="flex items-center space-x-2">
+                    <span
+                      className="block w-4 h-4 rounded shrink-0"
+                      style={{ backgroundColor: COLORS[i % COLORS.length] }}
                     />
-                  ) : (
-                    row[j]
-                  )}
-                </td>
-              ))}
+                    <span className="text-gray-800">
+                      {d.label}：{d.value.toLocaleString()}円
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
 
-              <td className="border p-2 text-center">
-                <button
-                  className="text-red-500"
-                  onClick={() => deleteRow(i)}
-                >
-                  削除
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+            {/* カテゴリ内のテーブル */}
+            <table className="w-full border border-gray-500 border-collapse bg-white/80 backdrop-blur-sm rounded-lg shadow">
+              <thead className="bg-gray-100">
+                <tr>
+                  <th className="border p-2">No.</th>
+                  <th className="border p-2">項目</th>
+                  <th className="border p-2">単価</th>
+                  <th className="border p-2">数量</th>
+                  <th className="border p-2">費用</th>
+                  <th className="border p-2">ディスカウント</th>
+                  <th className="border p-2">適用金額</th>
+                  <th className="border p-2">備考</th>
+                  <th className="border p-2">操作</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {rowsInCategory.map((row, i) => (
+                  <tr key={row[0]}>
+                    <td className="border p-2">{row[0]}</td>
+                    <td className="border p-2">{row[2]}</td>
+                    <td className="border p-2">{row[3]}</td>
+                    <td className="border p-2">{row[4]}</td>
+                    <td className="border p-2">{row[5]}</td>
+                    <td className="border p-2">{row[6]}</td>
+                    <td className="border p-2">{row[7]}</td>
+                    <td className="border p-2">{row[8]}</td>
+
+                    <td className="border p-2 text-center">
+                      <button
+                        className="text-red-500"
+                        onClick={() => deleteRow(i)}
+                      >
+                        削除
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+          </div>
+        );
+      })}
 
       {/* 合計金額 */}
       <p className="mt-4 text-xl font-bold text-gray-900">
@@ -123,7 +182,7 @@ export default function Home() {
             <div key={i} className="flex items-center space-x-2">
               <span
                 className="block w-4 h-4 rounded shrink-0"
-                style={{ backgroundColor: "black" }}
+                style={{ backgroundColor: COLORS[i % COLORS.length] }}
               />
               <span className="text-gray-800">
                 {d.label}：{d.value.toLocaleString()}円
@@ -144,6 +203,7 @@ export default function Home() {
 
           const data = {
             no: nextNo,
+            category: (form.category as HTMLSelectElement).value,
             item: (form.item as HTMLInputElement).value,
             unit: (form.unit as HTMLInputElement).value,
             qty: (form.qty as HTMLInputElement).value,
@@ -162,6 +222,18 @@ export default function Home() {
       >
         <h2 className="font-bold mb-2">項目を追加</h2>
 
+        <select name="category" className="border p-2 mr-2">
+          <option value="料理＆ドリンク">料理＆ドリンク</option>
+          <option value="ウェディングセレモニー">ウェディングセレモニー</option>
+          <option value="エンターテイメント">エンターテイメント</option>
+          <option value="【Beauty①】フラワーエンゲージメント">【Beauty①】フラワーエンゲージメント</option>
+          <option value="【Beauty②】メイク＆ドレッシング">【Beauty②】メイク＆ドレッシング</option>
+          <option value="【Beauty③】ドレス">【Beauty③】ドレス</option>
+          <option value="写真＆動画">写真＆動画</option>
+          <option value="【Guest①】ギフト">【Guest①】ギフト</option>
+          <option value="【Guest②】ペーパーアイテム">【Guest②】ペーパーアイテム</option>
+          <option value="その他">その他</option>
+        </select>
         <input name="item" placeholder="項目" className="border p-2 mr-2" />
         <input name="unit" placeholder="単価" className="border p-2 mr-2" />
         <input name="qty" placeholder="数量" className="border p-2 mr-2" />

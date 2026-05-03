@@ -38,7 +38,8 @@ export async function POST(req: Request) {
   // ② 追加したいカテゴリの最後の行を探す
 
     // 正規化関数
-    const normalize = (s) => s.replace(/\s+/g, "").normalize("NFKC");
+    const normalize = (s: string) =>
+        s.replace(/\s+/g, "").normalize("NFKC");
     const target = normalize(body.category);
 
     let lastRowIndexOnSheet = -1;

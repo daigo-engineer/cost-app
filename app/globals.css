@@ -48,3 +48,15 @@ table {
 html {
   font-size: 8px;
 }
+
+body {
+  padding-bottom: 100px;
+}
+
+.add-form {
+  margin-bottom: 40px;
+}
+
+.add-sum {
+  margin-top: 40px;
+}

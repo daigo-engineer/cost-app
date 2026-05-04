@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { google } from "googleapis";
 
 export async function POST(req: Request) {
-  const { row, col, value } = await req.json(); // row は 0-based index
+  const { row, rowData } = await req.json(); // rowData として配列を受け取る
 
   const auth = new google.auth.GoogleAuth({
     credentials: {
@@ -13,38 +13,29 @@ export async function POST(req: Request) {
   });
 
   const sheets = google.sheets({ version: "v4", auth });
+  const sheetRowNumber = Number(row) + 1; //[cite: 7]
 
-  // A2 が rows[0] → シート上の行番号は row + 2
-  const sheetRowNumber = Number(row) + 2;
-
-  // ① 行全体を読み込む
-  const read = await sheets.spreadsheets.values.get({
-    spreadsheetId: process.env.SHEET_ID,
-    range: `shered_budget!A${sheetRowNumber}:I${sheetRowNumber}`,
-  });
-
-  const current = read.data.values?.[0] || [];
-
-  // ② 編集されたセルを反映
-  current[col] = value;
-
-  // ③ 再計算（単価 × 数量 → 費用、費用 − 割引 → 適用金額）
-  const unit = Number(current[3] || 0);
-  const qty = Number(current[4] || 0);
-  const discount = Number(current[6] || 0);
+  // 送られてきたデータから数値を抽出して再計算
+  const unit = Number(rowData[3] || 0); // 単価
+  const qty = Number(rowData[4] || 0);  // 数量
+  const discount = Number(rowData[6] || 0); // 割引
 
   const cost = unit * qty;
   const applied = cost - discount;
 
-  current[5] = cost;     // 費用
-  current[7] = applied;  // 適用金額
+  // 更新用データの作成
+  const updatedRow = [...rowData];
+  updatedRow[5] = cost;     // F列: 費用
+  updatedRow[7] = applied;  // H列: 適用金額
 
-  // ④ 行全体を書き戻す
+  // まとめてスプレッドシートを更新[cite: 7]
   await sheets.spreadsheets.values.update({
     spreadsheetId: process.env.SHEET_ID,
     range: `shered_budget!A${sheetRowNumber}:I${sheetRowNumber}`,
     valueInputOption: "USER_ENTERED",
-    requestBody: { values: [current] },
+    requestBody: { 
+      values: [updatedRow] 
+    },
   });
 
   return NextResponse.json({ ok: true });

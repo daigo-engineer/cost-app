@@ -11,12 +11,15 @@ export default function Home() {
   const [editingRow, setEditingRow] = useState<number | null>(null)
   const [tempRow, setTempRow] = useState<string[]>([])
   // セル更新
-  async function saveCell(row: number, col: number, value: string) {
-    await fetch("/api/update", {
+  async function saveRow(no: number, rowData: string[]) {
+  // rowData にはその行の「項目、単価、数量、ディスカウント、備考」がすべて入った配列を渡す
+  await fetch("/api/update", {
       method: "POST",
-      body: JSON.stringify({ row, col, value }),
+      body: JSON.stringify({ 
+        row: no, 
+        rowData: rowData // 行データ丸ごと送る
+      }),
     });
-    location.reload();
   }
 
   // 行削除
@@ -327,12 +330,13 @@ export default function Home() {
                           <button
                             className="text-blue-500"
                             onClick={async () => {
-                              // tempRow の内容を saveCell で反映
-                              for (let col = 2; col <= 8; col++) {
-                                await saveCell(i, col, tempRow[col]);
-                              }
+                              const sheetNo = Number(row[0]);
+                              
+                              // ループを回さず、1回だけAPIを叩く
+                              await saveRow(sheetNo, tempRow);
+                              
                               setEditingRow(null);
-                              location.reload();
+                              location.reload(); 
                             }}
                           >
                             保存
